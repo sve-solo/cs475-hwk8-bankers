@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   fscanf(fp, "%d", &NPROC);
 
   printf("Num of resources: %d\n", NRES);
-  printf("Num of processes: %d\n", NPROC);
+  printf("Num of processes: %d\n\n", NPROC);
 
   //get space for total resource vector
   int* resVector = (int*) malloc(sizeof(int) * NRES);
@@ -40,9 +40,8 @@ int main(int argc, char *argv[])
   //fill resource vector from file
   for(int i = 0; i < NRES; i++){
     fscanf(fp, "%d", &resVector[i]);
-    printf("Resource %d: %d\n", i, resVector[i]);
   }
-  printf("\n");
+  printVector(resVector);
 
   //get space for max demand/need matrix
   int** maxMatrix = (int**) malloc(sizeof(int*) * NPROC);
@@ -57,7 +56,7 @@ int main(int argc, char *argv[])
 		}
 	}
   //print max demand matrix
-  printMaxtrix(maxMatrix);
+  printMatrix(maxMatrix);
 
   //get space for allocation matrix
   int** allocMatrix = (int**) malloc(sizeof(int*) * NPROC);
@@ -72,9 +71,8 @@ int main(int argc, char *argv[])
 		}
 	}
   //print allocation matrix
-  printMaxtrix(allocMatrix);
-
-
+  printMatrix(allocMatrix);
+  
   // TODO: Run banker's safety algorithm
 
   //close file
