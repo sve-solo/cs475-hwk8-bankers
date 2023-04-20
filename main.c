@@ -73,6 +73,40 @@ int main(int argc, char *argv[])
   //print allocation matrix
   printMatrix(allocMatrix);
   
+  //sanity check
+
+  //sanity check 1
+  //make sure currently allocated resources do not exceed the total number of resources
+  int sum = 0;
+  for(int i = 0; i < NRES; i++){
+    for(int j = 0; j < NPROC; j++){
+      sum += allocMatrix[j][i];
+      //printf("allocMatrix: %d\n", allocMatrix[j][i]);
+    }
+    //printf("Sum for %d: %d\n", i, sum);
+    //printf("Resvec for %d: %d\n", i, resVector[i]);
+    if(sum > resVector[i]){
+      printf("Integrity test failed: allocated resources exceed total resources\n");
+      break;
+    }
+    sum = 0;
+  }
+
+  //sanity check 2.
+  //make sure each thread’s needs do not exceed its max demands for each resource type
+
+  int** sanity2 = subMatrix(maxMatrix, allocMatrix);
+  for(int i = 0; i < NPROC; i++){
+    for(int j = 0; j < NRES; j++){
+      if(sanity2[i][j] < 0){
+        printf("Integrity test failed: allocated resources exceed demand for Thread %d\n", i);
+        printf("Need %d instances of resource %d\n", sanity2[i][j], j);
+        break;
+      }
+    }
+  }
+  
+
   // TODO: Run banker's safety algorithm
 
   //close file
@@ -89,11 +123,16 @@ int main(int argc, char *argv[])
 
       free(allocMatrix[i]);
       allocMatrix[i] = NULL;
+
+      free(sanity2[i]);
+      sanity2[i] = NULL;
   }
   free(maxMatrix);
   maxMatrix = NULL;
   free(allocMatrix);
   allocMatrix = NULL;
+  free(sanity2);
+  sanity2 = NULL;
 
   return 0;
 }
