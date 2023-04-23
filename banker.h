@@ -1,3 +1,3 @@
 /* declarations related to banker's algorithm */
 
-// TODO: isSafe(Available, Alloc, Need)
+int isSafe(int *availVec, int **allocMat, int **needMat);

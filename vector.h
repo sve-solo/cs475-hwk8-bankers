@@ -1,22 +1,34 @@
 
 // TODO: function prototypes of vector and matrix operations
-int** addMatrix(int** matrixA, int** matrixB);
+int **addMatrix(int **matrixA, int **matrixB);
 
-int* addVector(int* vectorA, int* vectorB);
+int *addVector(int *vectorA, int *vectorB);
 
-int compareVector(int* vectorA, int* vectorB);
+void addVec2toVec1(int *vec1, int *vec2);
 
-int** copyMatrix(int** oldMatrix);
+int vec1GreaterOrEqualVec2(int *greater, int *lesser);
 
-int* copyVector(int* oldVector);
+int compareVector(int *vectorA, int *vectorB);
 
-void printMatrix(int** matrix);
+int **copyMatrix(int **oldMatrix);
 
-void printVector(int* vector);
+int *copyVector(int *oldVector);
 
-int** subMatrix(int** matrixA, int** matrixB);
+void clonevec(int *vec, int *result);
 
-int* subVector(int* vectorA, int* vectorB);
+void printMatrix(int **matrix);
 
-extern int NRES; //number of resource types
-extern int NPROC; //number of processes
+void printVector(int *vector);
+
+int **subMatrix(int **matrixA, int **matrixB);
+
+int *subVector(int *vectorA, int *vectorB);
+
+void subtractvecs(int *vec1, int *vec2, int *result);
+
+void sumRows(int **mat, int *result);
+
+void subtractmats(int **mat1, int **mat2, int **result);
+
+extern int NRES;  // number of resource types
+extern int NPROC; // number of processes

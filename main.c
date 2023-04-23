@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     }
   }
   // print max demand matrix
+  printf("Max demand matrix:\n");
   printMatrix(maxMatrix);
 
   // get space for allocation matrix
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
     }
   }
   // print allocation matrix
+  printf("Allocation matrix:\n");
   printMatrix(allocMatrix);
 
   // sanity check
@@ -124,7 +126,23 @@ int main(int argc, char *argv[])
     }
   }
 
-  // TODO: Run banker's safety algorithm
+  // Compute the availability vector (PMR)
+  // Get the availability resource vector
+  int totAllocVector[NRES];
+  sumRows(allocMatrix, totAllocVector);
+  // resVector is the total resource vector
+  int *availVector;
+  availVector = (int *)malloc(sizeof(int) * NRES);
+  subtractvecs(resVector, totAllocVector, availVector);
+  // Get the need matrix, which is maximum demand - current allocation
+  int **needMatrix = (int **)malloc(sizeof(int *) * NPROC);
+  for (int i = 0; i < NPROC; i++)
+    needMatrix[i] = (int *)malloc(sizeof(int) * NRES);
+  subtractmats(maxMatrix, allocMatrix, needMatrix);
+
+  // TODO: Run banker's safety algorithm with different orderings
+  // the following has just one ordering (PMR)
+  isSafe(availVector, allocMatrix, needMatrix);
 
   // close file
   fclose(fp);
@@ -133,6 +151,8 @@ int main(int argc, char *argv[])
 
   free(resVector);
   resVector = NULL;
+  free(availVector);
+  availVector = NULL;
 
   for (int i = 0; i < NPROC; i++)
   {
@@ -144,6 +164,9 @@ int main(int argc, char *argv[])
 
     free(sanity2[i]);
     sanity2[i] = NULL;
+
+    free(needMatrix[i]);
+    needMatrix[i] = NULL;
   }
   free(maxMatrix);
   maxMatrix = NULL;
@@ -151,6 +174,8 @@ int main(int argc, char *argv[])
   allocMatrix = NULL;
   free(sanity2);
   sanity2 = NULL;
+  free(needMatrix);
+  needMatrix = NULL;
 
   return 0;
 }
