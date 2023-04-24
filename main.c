@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
   printMatrix(allocMatrix);
 
   // sanity check
+  int sanity = 0; //set sanity boolean to false
 
   // sanity check 1
   // make sure currently allocated resources do not exceed the total number of resources
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
     if (sum > resVector[i])
     {
       printf("Integrity test failed: allocated resources exceed total resources\n");
+      sanity = 1; //set sanity to true because test failed
       break;
     }
     sum = 0;
@@ -121,38 +123,52 @@ int main(int argc, char *argv[])
       {
         printf("Integrity test failed: allocated resources exceed demand for Thread %d\n", i);
         printf("Need %d instances of resource %d\n", sanity2[i][j], j);
+        sanity = 1; //set sanity to true because test failed
         break;
       }
     }
   }
+  
+  //if sanity checks passed, run saftey alg
+  if(sanity == 0){
+    // Compute the availability vector (PMR)
+    // Get the availability resource vector
+    int totAllocVector[NRES];
+    sumRows(allocMatrix, totAllocVector);
+    // resVector is the total resource vector
+    int *availVector;
+    availVector = (int *)malloc(sizeof(int) * NRES);
+    subtractvecs(resVector, totAllocVector, availVector);
+    // Get the need matrix, which is maximum demand - current allocation
+    int **needMatrix = (int **)malloc(sizeof(int *) * NPROC);
+    for (int i = 0; i < NPROC; i++){
+      needMatrix[i] = (int *)malloc(sizeof(int) * NRES);
+    }
+    subtractmats(maxMatrix, allocMatrix, needMatrix);
 
-  // Compute the availability vector (PMR)
-  // Get the availability resource vector
-  int totAllocVector[NRES];
-  sumRows(allocMatrix, totAllocVector);
-  // resVector is the total resource vector
-  int *availVector;
-  availVector = (int *)malloc(sizeof(int) * NRES);
-  subtractvecs(resVector, totAllocVector, availVector);
-  // Get the need matrix, which is maximum demand - current allocation
-  int **needMatrix = (int **)malloc(sizeof(int *) * NPROC);
-  for (int i = 0; i < NPROC; i++)
-    needMatrix[i] = (int *)malloc(sizeof(int) * NRES);
-  subtractmats(maxMatrix, allocMatrix, needMatrix);
+    // TODO: Run banker's safety algorithm with different orderings
+    // the following has just one ordering (PMR)
+    isSafe(availVector, allocMatrix, needMatrix);
 
-  // TODO: Run banker's safety algorithm with different orderings
-  // the following has just one ordering (PMR)
-  isSafe(availVector, allocMatrix, needMatrix);
+    free(availVector);
+    availVector = NULL;
+
+    for (int i = 0; i < NPROC; i++){
+      free(needMatrix[i]);
+      needMatrix[i] = NULL;
+    }
+
+    free(needMatrix);
+    needMatrix = NULL;
+  }
 
   // close file
   fclose(fp);
 
-  // free matrices
+  // free all used vectors and matrices
 
   free(resVector);
   resVector = NULL;
-  free(availVector);
-  availVector = NULL;
 
   for (int i = 0; i < NPROC; i++)
   {
@@ -164,9 +180,6 @@ int main(int argc, char *argv[])
 
     free(sanity2[i]);
     sanity2[i] = NULL;
-
-    free(needMatrix[i]);
-    needMatrix[i] = NULL;
   }
   free(maxMatrix);
   maxMatrix = NULL;
@@ -174,8 +187,7 @@ int main(int argc, char *argv[])
   allocMatrix = NULL;
   free(sanity2);
   sanity2 = NULL;
-  free(needMatrix);
-  needMatrix = NULL;
+  
 
   return 0;
 }
