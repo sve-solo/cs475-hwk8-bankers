@@ -19,8 +19,8 @@ int isSafe(int *availVec, int **allocMat, int **needMat)
     // which increases every time a thread finishes and its resources are freed up
     // Note: this is not mallocd so it does not need to be freed
     // But it could be mallocd here and then freed before returning
-    int workVec[NRES];
-    clonevec(availVec, workVec);
+    //int workVec[NRES];
+    int* workVec = copyVector(availVec);
     int finishVec[NPROC];
     for (int i = 0; i < NPROC; i++)
         finishVec[i] = 0;
@@ -59,6 +59,8 @@ int isSafe(int *availVec, int **allocMat, int **needMat)
         if (count >= 100)
         {
             printf("too many tries, giving up!\n");
+            free(workVec);
+            workVec = NULL;
             return 0;
         }
     }
@@ -84,6 +86,8 @@ int isSafe(int *availVec, int **allocMat, int **needMat)
                 printf("T%d ", i);
         }
         printf("cannot finish\n");
+        free(workVec);
+        workVec = NULL;
         return 0;
     }
 
@@ -92,6 +96,8 @@ int isSafe(int *availVec, int **allocMat, int **needMat)
         if (finishVec[i] == 0)
         {
             printf("\nError: T%d not safe!", i);
+            free(workVec);
+            workVec = NULL;
             return 0;
         }
         else
@@ -99,5 +105,7 @@ int isSafe(int *availVec, int **allocMat, int **needMat)
     printf("\n");
 
     // If they all finished, we can return 1 for safe
+    free(workVec);
+    workVec = NULL;
     return 1;
 }

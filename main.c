@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   // print error message if file not found
   if (fp == NULL)
   {
-    printf("Error: file not found\n");
+    printf("Error: file not found or does not exist\n");
     return 0;
   }
 

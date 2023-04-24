@@ -130,7 +130,7 @@ int *copyVector(int *oldVector)
 }
 
 /**
- * Clone (deep copy) vector
+ * Clone vector
  * @param vec  Pointer to the original vector, to be cloned
  * @param result  Pointer to the vector to resulting clone
  */
@@ -138,7 +138,7 @@ void clonevec(int *vec, int *result)
 {
 	for (int col = 0; col < NRES; col++)
 		result[col] = vec[col];
-	return;
+	return; 
 }
 
 /**
