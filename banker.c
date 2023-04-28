@@ -52,7 +52,7 @@ int safeCheck(int* workVec, int* finishVec, int** allocMat, int** needMat, int* 
 
     //if the checker fails
     if(printUnsafe == 1){
-        printf("UNSAFE: ");
+        printf("UNSAFE: \n");
         for (int i = 0; i < NPROC; i++)
         {
             if (finishVec[i] == 0)
