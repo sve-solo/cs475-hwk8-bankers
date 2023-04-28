@@ -22,31 +22,23 @@ int safeCheck(int* workVec, int* finishVec, int** allocMat, int** needMat, int* 
         //print safe schedules
         printf("SAFE: ");
         for(int i = 0; i < NPROC; i++){
-            printf("%d ", sequence[i]);
+            printf("T%d ", sequence[i]);
         }
-        printf("\n");
-        //printVector(sequence, NPROC);
+        printf("\n"); 
         return 1;
     }
 
     //simulates if threads can finish
-    //printf("Before: ");
-    //printVector(workVec, NRES);
     for (int row = 0; row < NPROC; row++){
         // Can we run this thread?
-        if ((finishVec[row] == 0) && (compareVector(workVec, needMat[row]))){//(vec1GreaterOrEqualVec2(workVec, needMat[row]))){
+        if ((finishVec[row] == 0) && (compareVector(workVec, needMat[row]))){
             // pretend that thread i finishes execution
-            // then OS can reclaim thread i's allocated resources
-            // workVec += allocMat[row];
+            // then OS can reclaim thread i's allocated resources 
             finishVec[row] = 1;
             addVec2toVec1(workVec, allocMat[row]);
-            //printf("After, row %d: ", row);
-            //printVector(workVec, NRES);
-            
 
             //update safe sequence
             sequence[recurse] = row;
-            //printVector(sequence, NPROC);
 
             //recursion
             safe = safeCheck(workVec, finishVec, allocMat, needMat, sequence, recurse + 1);
@@ -55,14 +47,11 @@ int safeCheck(int* workVec, int* finishVec, int** allocMat, int** needMat, int* 
             printUnsafe = 0;
             finishVec[row] = 0;
             subVector(workVec, allocMat[row]);
-            //printf("After subtracting, row %d: ", row);
-            //printVector(workVec, NRES);
         }
     }
 
     //if the checker fails
     if(printUnsafe == 1){
-        //printVector(finishVec, NPROC);
         printf("UNSAFE: ");
         for (int i = 0; i < NPROC; i++)
         {
@@ -93,21 +82,17 @@ int isSafe(int *availVec, int **allocMat, int **needMat){
     // which increases every time a thread finishes and its resources are freed up
     // Note: this is not mallocd so it does not need to be freed
     // But it could be mallocd here and then freed before returning
-    //int workVec[NRES];
     int* workVec = copyVector(availVec);
-    //printVector(workVec, NRES);
     int* finishVec = (int*) malloc(NPROC * sizeof(int));
     for (int i = 0; i < NPROC; i++){
         finishVec[i] = 0;
     }
-    //printVector(finishVec, NPROC);
 
     //fill sequence with -1s, before it has actual values
     int* sequence = (int*) malloc(NPROC * sizeof(int));
     for (int i = 0; i < NPROC; i++){
         sequence[i] = -1;
     }
-    //printVector(sequence, NPROC);
     
     //call safeCheck to print the schedules
     int recurse = 0;
