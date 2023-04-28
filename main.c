@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
   fscanf(fp, "%d", &NRES);
   fscanf(fp, "%d", &NPROC);
 
-  printf("Num of resources: %d\n", NRES);
-  printf("Num of processes: %d\n\n", NPROC);
+  //printf("Num of resources: %d\n", NRES);
+  //printf("Num of processes: %d\n\n", NPROC);
 
   // get space for total resource vector
   int *resVector = (int *)malloc(sizeof(int) * NRES);
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   {
     fscanf(fp, "%d", &resVector[i]);
   }
-  printVector(resVector);
+  //printVector(resVector, NRES);
 
   // get space for max demand/need matrix
   int **maxMatrix = (int **)malloc(sizeof(int *) * NPROC);
@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
     }
   }
   // print max demand matrix
-  printf("Max demand matrix:\n");
-  printMatrix(maxMatrix);
+  //printf("Max demand matrix:\n");
+  //printMatrix(maxMatrix);
 
   // get space for allocation matrix
   int **allocMatrix = (int **)malloc(sizeof(int *) * NPROC);
@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
     }
   }
   // print allocation matrix
-  printf("Allocation matrix:\n");
-  printMatrix(allocMatrix);
+  //printf("Allocation matrix:\n");
+  //printMatrix(allocMatrix);
 
   // sanity check
   int sanity = 0; //set sanity boolean to false
@@ -135,11 +135,11 @@ int main(int argc, char *argv[])
     // Get the availability resource vector
     int totAllocVector[NRES];
     sumRows(allocMatrix, totAllocVector);
-    // resVector is the total resource vector
+    // //resVector is the total resource vector
     int *availVector;
     availVector = (int *)malloc(sizeof(int) * NRES);
     subtractvecs(resVector, totAllocVector, availVector);
-    // Get the need matrix, which is maximum demand - current allocation
+    // // Get the need matrix, which is maximum demand - current allocation
     int **needMatrix = (int **)malloc(sizeof(int *) * NPROC);
     for (int i = 0; i < NPROC; i++){
       needMatrix[i] = (int *)malloc(sizeof(int) * NRES);

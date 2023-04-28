@@ -61,25 +61,23 @@ void addVec2toVec1(int *vec1, int *vec2)
 	// TODO: This seemed more convenient than creating a new vector,
 	// and if it is only used on clones (i.e. workVec), it should not
 	// cause problems. But will need to make sure once we try different orderings
-	for (int i = 0; i < NRES; i++)
+	for (int i = 0; i < NRES; i++){
 		vec1[i] += vec2[i];
-	return;
+	}
 }
 
 /**
  * Compare two given vectors
  * @param vectorA pointer to first vector
  * @param vectorB pointer to second vector
- * @return 1 if vectors are the same, 0 otherwise
+ * @return 1 if vectorA is less than or equal to vectorB, 0 otherwise
  */
 int compareVector(int *vectorA, int *vectorB)
 {
-	for (int i = 0; i < NRES; i++)
-	{
+	for (int i = 0; i < NRES; i++){
 		// if vector's are not the same, return false
-		if (vectorA[i] != vectorB[i])
-		{
-			printf("VectorA: %d, VectorB: %d\n", vectorA[i], vectorB[i]);
+		if (vectorA[i] < vectorB[i]){
+			//printf("VectorA: %d, VectorB: %d\n", vectorA[i], vectorB[i]);
 			return 0;
 		}
 	}
@@ -130,6 +128,22 @@ int *copyVector(int *oldVector)
 }
 
 /**
+ * Check if vector contains a negative -1
+ * @param vector vector to check
+ * @return 0 if vector has a -1, 1 otherwise
+ */
+int checkFinish(int* vector){
+	for (int i = 0; i < NRES; i++){
+		// if vector[i] is not 1
+		if (vector[i] == -1){
+			return 0;
+		}
+	}
+	return 1;
+
+}
+
+/**
  * Clone vector
  * @param vec  Pointer to the original vector, to be cloned
  * @param result  Pointer to the vector to resulting clone
@@ -161,10 +175,11 @@ void printMatrix(int **matrix)
 /**
  * Print a given vector
  * @param oldVector pointer to a vector
+ * @param length length of the vector
  */
-void printVector(int *vector)
+void printVector(int *vector, int length)
 {
-	for (int i = 0; i < NRES; i++)
+	for (int i = 0; i < length; i++)
 	{
 		printf("%d ", vector[i]);
 	}
@@ -217,19 +232,14 @@ void subtractmats(int **mat1, int **mat2, int **result)
  * Subtracts two vectors together
  * @param vectorA pointer to first vector
  * @param vectorB pointer to second vector
- * @return pointer to the newly subtracted  vector
+ * @return newly subtracted  vector
  */
-int *subVector(int *vectorA, int *vectorB)
-{
-	// allocate space for new vector
-	int *newVector = (int *)malloc(sizeof(int) * NRES);
-
-	for (int i = 0; i < NRES; i++)
-	{
-		newVector[i] = vectorA[i] - vectorB[i];
+int *subVector(int *vectorA, int *vectorB){
+	for (int i = 0; i < NRES; i++){
+		vectorA[i] = vectorA[i] - vectorB[i];
 	}
 
-	return newVector; // don't forget to free in main if we use this method
+	return vectorA; // don't forget to free in main if we use this method
 }
 
 /**
@@ -260,6 +270,7 @@ int vec1GreaterOrEqualVec2(int *greater, int *lesser)
 	// but it's only a vector so maybe not necessary?
 	int result[NRES];
 	subtractvecs(greater, lesser, result);
+	//printVector(result, NRES);
 	for (int col = 0; col < NRES; col++)
 		if (result[col] < 0)
 			return 0;

@@ -10,6 +10,8 @@ int vec1GreaterOrEqualVec2(int *greater, int *lesser);
 
 int compareVector(int *vectorA, int *vectorB);
 
+int checkFinish(int* vector);
+
 int **copyMatrix(int **oldMatrix);
 
 int *copyVector(int *oldVector);
@@ -18,7 +20,7 @@ void clonevec(int *vec, int *result);
 
 void printMatrix(int **matrix);
 
-void printVector(int *vector);
+void printVector(int *vector, int length);
 
 int **subMatrix(int **matrixA, int **matrixB);
 
